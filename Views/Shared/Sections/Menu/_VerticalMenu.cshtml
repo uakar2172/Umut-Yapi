@@ -1,0 +1,130 @@
+﻿@{
+    TempData.Keep();
+    ViewContext.HttpContext.Request.Query.TryGetValue("id",out var index);
+}
+
+<!-- Menu -->
+@* ! Do this simple *@
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+  @* ! Hide app brand if navbar-full *@
+  <div
+    class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
+    <a asp-controller="Musteri" asp-action="Index" class="app-brand-link">
+      <span class="app-brand-logo demo">
+        @await Html.PartialAsync("../_Partials/_Macros")
+      </span>
+      <span class="app-brand-text demo menu-text fw-bold ms-2">@TempData.Peek("appName")</span>
+    </a>
+
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+      <i class="bx bx-chevron-left bx-sm align-middle"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  @* ! Full version menu-items *@
+  <ul class="menu-inner py-1">
+    <!-- Dashboards -->
+        <li class='menu-item'>
+            <a asp-action="Index" asp-controller="Home" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div>Anasayfa</div>
+            </a>
+        </li>
+
+        <li class='menu-item'>
+            <a class="menu-link menu-toggle">
+                <i class="fa-solid fa-list" style="margin-right: 10px;"></i>
+                <div>Kategoriler</div>
+            </a>
+            <ul class="menu-sub">
+                <li class='menu-item@(index == "1" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="1" class="menu-link">
+                        <div>Beton ve Harç Malzemeleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "2" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="2" class="menu-link">
+                        <div>Yalıtım Malzemeleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "3" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="3" class="menu-link">
+                        <div>Duvar ve Döşeme Malzemeleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "4" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="4" class="menu-link">
+                        <div>Kapı ve Pencere Sistemleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "7" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="7" class="menu-link">
+                        <div>Elektronik</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "10" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="10" class="menu-link">
+                        <div>El Aletleri ve Makineler</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "9" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="9" class="menu-link">
+                        <div>Metal Ürün ve Aksesuarlar</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "8" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="8" class="menu-link">
+                        <div>Sıhhi Tesisat Malzemeleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "6" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="6" class="menu-link">
+                        <div>Ahşap ve Marangoz Malzemeleri</div>
+                    </a>
+                </li>
+                <li class='menu-item@(index == "5" ? " active" : "")'>
+                    <a asp-action="Index" asp-controller="Musteri" asp-route-id="5" class="menu-link">
+                        <div>Boyalar ve Kaplamalar</div>
+                    </a>
+                </li>
+            </ul>
+        </li> 
+   </ul>
+</aside>
+<!-- / Menu -->
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // .menu-item ve .menu-sub elemanlarına display: block ekle
+        var menuItems = document.querySelectorAll('.menu-item');
+        var menuSubs = document.querySelectorAll('.menu-sub');
+
+        menuItems.forEach(function (item) {
+            item.style.display = 'block';
+        });
+
+        menuSubs.forEach(function (sub) {
+            sub.style.display = 'block';
+        });
+
+        // menu-toggle classına sahip a etiketine click eventi ekle
+        var toggles = document.querySelectorAll('.menu-toggle');
+
+        toggles.forEach(function (toggle) {
+            toggle.addEventListener('click', function (event) {
+                event.preventDefault(); // Default davranışı engelle
+                var parentItem = this.parentElement.querySelector('.menu-sub');
+                if (parentItem.style.display === 'block') {
+                    parentItem.style.display = 'none';
+                } else {
+                    parentItem.style.display = 'block';
+                }
+            });
+        });
+    });
+</script>

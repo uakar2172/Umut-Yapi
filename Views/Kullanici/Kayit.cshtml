@@ -1,0 +1,70 @@
+﻿@model KayitViewModel;
+@{
+    Layout = "_BlankLayout";
+    ViewData["Title"] = "Register Basic - Pages";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/page-auth.css">
+}
+
+@* ************** Content ************** *@
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+
+            <!-- Register Card -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a href="/" class="app-brand-link gap-2">
+                            <span class="app-brand-logo demo">@await Html.PartialAsync("../_Partials/_Macros")</span>
+                            <span class="app-brand-text demo text-body fw-bold">@TempData.Peek("appName")</span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <h4 class="mb-2">Kayıt olmak için hala geç değil!</h4>
+                    <p class="mb-4">Kaydını oluştur ve alışverişe başla</p>
+
+                    <form id="formAuthentication" class="mb-3" action="Kayit" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Kullanıcı Adı</label>
+                            <input asp-for="KullaniciAdi" type="text" class="form-control" id="username" placeholder="Kullanıcı adınızı girin." autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input asp-for="Email" type="text" class="form-control" id="email" placeholder="Email'inizi girin.">
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <label class="form-label" for="password">Şifre</label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="Sifre" type="password" id="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <label class="form-label" for="password">Şifre Tekrar</label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="SifreTekrar" type="password" id="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary d-grid w-100">
+                            Kayıt Ol
+                        </button>
+                    </form>
+
+                    <p class="text-center">
+                        <span>Zaten hesabın var mı?</span>
+                        <a asp-action="Giris" asp-controller="Kullanici">
+                            <span>Hemen giriş yap</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <!-- Register Card -->
+        </div>
+    </div>
+</div>

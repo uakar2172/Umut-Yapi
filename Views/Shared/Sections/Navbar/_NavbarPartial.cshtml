@@ -1,0 +1,87 @@
+@{
+    var girisYapildiMi = Context.Session.GetString("GirisYapildiMi");
+
+    var kullaniciAdi = Context.Session.GetString("KullaniciAdi");
+    var fotograf = Context.Session.GetString("Fotograf");
+}
+
+<div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+        <!-- Search -->
+    <div class="navbar-nav align-items-center">
+        <div class="nav-item d-flex align-items-center">
+            <i class="bx bx-search fs-4 lh-0"></i>
+            <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2 search-input" placeholder="Aramak istediðinizi girin..." aria-label="Aramak istediðinizi girin...">
+        </div>
+    </div>
+        <!-- /Search -->
+    @if (girisYapildiMi == "True")
+    {
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- Place this tag where you want the button to render. -->
+            <li class="nav-item lh-1 me-3 btn border border-dark">
+                <a class="fa fa-shopping-cart" asp-action="Index" asp-controller="Sepet">  Sepete Git</a>
+                
+            </li>
+
+
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="~/img/KullaniciFoto/@fotograf" id="navbarAvatar" alt class="w-px-40 h-auto rounded-circle">
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0);">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <span class="fw-medium d-block">@kullaniciAdi</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a asp-action="Detay" asp-controller="Kullanici" class="dropdown-item">
+                            <i class="bx bx-user me-2"></i>
+                            <span class="align-middle">Profile Git</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="Sepet" asp-controller="Musteri" class="dropdown-item">
+                            <i class="bx bx-cog me-2"></i>
+                            <span class="align-middle">Sepete Git</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a asp-action="Cikis" asp-controller="Kullanici" asp class="dropdown-item">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Çýkýþ Yap</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    }
+    else
+    {
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- Place this tag where you want the button to render. -->
+            <li class="nav-item lh-1 me-3 btn border border-dark">
+                <a class="fa-solid fa-user" asp-action="Giris" asp-controller="Kullanici">  Giris Yap</a>
+            </li>
+            <li class="nav-item lh-1 me-3 btn border border-dark">
+                <a class="fa-solid fa-registered" asp-action="Kayit" asp-controller="Kullanici">  Kayit Ol</a> 
+            </li>
+        </ul>
+    }
+
+      </div>

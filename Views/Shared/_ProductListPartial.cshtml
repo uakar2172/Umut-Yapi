@@ -1,0 +1,35 @@
+﻿@model IEnumerable<UmutYapi.Models.Tablolar.Urun>
+
+@foreach (var product in Model)
+{
+    <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card mb-3">
+            <img class="card-img-top" src="~/img/UrunFotolari/@product.UrunFoto" alt="Card image cap" height="200px" />
+            <div class="card-body">
+                <div class="row">
+                    <h5 class="col-lg-8 card-title">@product.UrunAdi</h5>
+                    <small class="col-lg-4 text-muted">(@product.UrunKodu)</small>
+                </div>
+                <div class="row">
+                    <p class="card-text col-lg-6">@product.UrunFiyati ₺</p>
+                    <p class="card-text col-lg-6">@product.StokAdeti @product.StokAdetiBirimi</p>
+                </div>
+                <p class="card-text">
+                    <small class="text-muted">@product.Aciklama</small>
+                </p>
+                <div class="row">
+                    <div class="col-8 d-flex align-items-center">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decrementQuantity(this, @product.StokAdeti)">-</button>
+                        <input type="text" class="form-control text-center mx-2" value="1" style="max-width: 50px;" oninput="validateQuantity(this, @product.StokAdeti)">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="incrementQuantity(this, @product.StokAdeti)">+</button>
+                    </div>
+                    <div class="col-4 text-end">
+                        <button type="button" class="btn btn-outline-primary" onclick="addToCart(@product.Id, this)">
+                            <span class="tf-icons bx bx-cart me-1"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

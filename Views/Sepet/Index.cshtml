@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Dashboard - Analytics";
+}
+@{
+    var kullaniciAdi = Context.Session.GetString("KullaniciAdi");
+
+}
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/apex-charts/apexcharts.js"></script>
+}
+@section PageScripts {
+    <script src="~/js/dashboards-analytics.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+}
+@{
+    Dictionary<int, int> urunStok = ViewBag.UrunStoklari;
+}
+@model IEnumerable<SepetViewModel>;
+
+<div class="row">
+    @if (!Model.Any())
+    {
+        <a asp-action="Index" asp-controller="Musteri" class="btn btn-outline-primary col-lg-6" type="button">Alışverişe Devam Et</a>
+        <a asp-action="Index" asp-controller="Siparis" class="btn btn-outline-primary col-lg-6" type="button">Siparişlerime Git</a>
+    }
+    else
+    {
+    <div class="col-lg-9">
+        @foreach (var item in Model)
+        {
+            <div class="row mb-5 product-row" data-product-id="@item.UrunId">
+                <div class="col-md">
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                                <img style="height: 100%" class="card-img card-img-left" src="~/img/UrunFotolari/@item.Fotograf" alt="Card image" />
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.UrunAdi - @item.BirimFiyat ₺</h5>
+                                    <p class="card-text">
+                                        @item.UrunAciklama
+                                    </p>
+                                    <p class="card-text">
+                                            <strong>Kaç Adet Alındı: </strong><span id="adet-@item.UrunId">@item.Adet</span>
+                                    </p>
+                                    <p class="card-text" >
+                                            <strong>Toplam Fiyat </strong><span id="fiyat-@item.UrunId">@item.ToplamFiyat</span> ₺
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card-body">
+                                        <button class="btn btn-danger" onclick="urunSil(@item.UrunId)">X</button>
+                                    <div class="col-8 d-flex align-items-center">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decrementQuantitySepet(this, @urunStok[item.UrunId], @item.UrunId, @item.BirimFiyat)">-</button>
+                                            <input type="text" class="text-center mx-2" value="@item.Adet" style="max-width: 50px;" oninput="validateQuantitySepet(this, @urunStok[item.UrunId], @item.UrunId, @item.BirimFiyat)">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="incrementQuantitySepet(this, @urunStok[item.UrunId], @item.UrunId, @item.BirimFiyat)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+                </div>
+                <span class="fw-medium d-block mb-1">Toplam Sepet Tutarı</span>
+                <h3 id="sepet-tutarı" class="card-title mb-2">@Model.AsQueryable().Sum(x => x.ToplamFiyat) ₺</h3>
+                <div class="row">
+                        <a id="satin-al" class="btn btn-outline-primary col-lg-5" type="button">Satın Al</a>
+                        <button id="sepeti-temizle" class="btn btn-outline-danger col-lg-5" type="button" onclick="sepetiTemizle()">Sepeti Temizle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+    
+</div>
+
+<script> 
+    function incrementQuantitySepet(button, maxStock, urunId, urunFiyat) {
+        const input = button.previousElementSibling;
+        let value = parseInt(input.value);
+        if (!isNaN(value) && value < maxStock) {
+            input.value = value + 1;
+            updateQuantity(urunId, value + 1, urunFiyat);
+        } else {
+            input.value = maxStock;
+            updateQuantity(urunId, maxStock, urunFiyat);
+        }
+    }
+
+    function decrementQuantitySepet(button, maxStock, urunId, urunFiyat) {
+        const input = button.nextElementSibling;
+        let value = parseInt(input.value);
+        if (!isNaN(value) && value > 1) {
+            input.value = value - 1;
+            updateQuantity(urunId, value - 1, urunFiyat);
+        } else {
+            input.value = 1;
+            updateQuantity(urunId, 1, urunFiyat);
+        }
+    }
+
+    function UpdateDom(urunId, adet, urunFiyat) {
+        console.log(urunFiyat);
+        document.getElementById(`adet-${urunId}`).innerText = adet;
+        document.getElementById(`fiyat-${urunId}`).innerText = adet * urunFiyat;
+    }
+
+    function updateQuantity(urunId, adet, urunFiyat) {
+        $.ajax({
+            type: "POST",
+            url: "/Sepet/AdetGuncelle",
+            data: { urunId: urunId, adet: adet },
+            success: function (response) {
+                console.log("Quantity updated successfully");
+                updateSepetTutari();
+                UpdateDom(urunId, adet, urunFiyat);
+            },
+            error: function (error) {
+                console.log("Error updating quantity:", error);
+            }
+        });
+    }
+
+    document.querySelector("#satin-al").addEventListener("click", function () {
+        $.ajax({
+            type: "POST",
+            url: "/Sepet/SatinAl",
+            success: function () {
+                    window.location.href = "/Siparis/Index";
+            },
+            error: function (error) {
+                console.log("Error:", error);
+                alert("Bir hata oluştu, lütfen tekrar deneyin.");
+            }
+        });
+    });
+
+    function updateSepetTutari() {
+        $.ajax({
+            type: "GET",
+            url: "/Sepet/ToplamSepetTutarınıHesapla",
+            success: function (response) {
+                if (response.success) {
+                    console.log(response);
+                    $("#sepet-tutarı").text(response.siparisTutarı.toFixed(2) + " ₺");
+                } else {
+                    console.log("Failed to update cart total.");
+                }
+            },
+            error: function (error) {
+                console.log("Error updating cart total:", error);
+            }
+        });
+    }
+
+    function urunSil(urunId) {
+        console.log("urunsil");
+        $.ajax({
+            type: "POST",
+            url: "/Sepet/UrunCikart",
+            data: { urunId: urunId },
+            success: function (response) {
+                updateSepetTutari();
+                window.location.reload();  // İsteğe bağlı: Ürün silindikten sonra sayfayı yenilemek
+            },
+            error: function (error) {
+                console.log("Error updating quantity:", error);
+            }
+        });
+    }
+
+    function sepetiTemizle() {
+        $.ajax({
+            type: "POST",
+            url: "/Sepet/SepetiTemizle",
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (error) {
+                console.log("Error updating quantity:", error);
+            }
+        });
+    }
+</script>
+
